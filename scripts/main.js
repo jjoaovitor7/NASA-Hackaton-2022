@@ -20,8 +20,17 @@ document.addEventListener("readystatechange", (e) => {
         })
       });
 
-      map3D
-        .htmlElementsData(data)
+      const setColors = (d) => {
+        if (d.mag >= 0 && d.mag < 1.5 * factor) {
+          return "#ffffff";
+        } else if (d.mag >= 1.5 * factor && d.mag < 2 * factor) {
+          return "#ffff00";
+        } else {
+          return "#ff0000";
+        }
+      }
+
+      map3D.htmlElementsData(data)
         .htmlElement(d => {
           const container = document.createElement("div");
           container.innerHTML = d.yer;
@@ -39,20 +48,30 @@ document.addEventListener("readystatechange", (e) => {
             content: `${d.yer}<br />Lat: ${d.lat}<br />Lng: ${d.lng}<br />Mag: ${d.mag / factor}`,
           });
           return container;
-        })
-        .ringMaxRadius("mag")
-        .ringColor((i) => {
-          if (i.mag >= 0 && i.mag < 1.5 * factor) {
-            return "#ffffff";
-          } else if (i.mag >= 1.5 * factor && i.mag < 2 * factor) {
-            return "#ffff00";
-          } else {
-            return "#ff0000";
-          }
-        })
-        .ringPropagationSpeed(1)
-        .ringRepeatPeriod("prd")
-        .ringsData(data);
+        });
+
+      document.getElementById("map-lines").addEventListener("click", (e) => {
+        map3D.hexBinPointLat(d => d.lat)
+          .hexBinPointLng(d => d.lng)
+          .hexBinPointWeight(d => d.mag)
+          .hexBinPointsData(data)
+          .hexTopColor(d => {
+            return setColors(d.points[0]);
+          })
+          .hexSideColor(d => {
+            return setColors(d.points[0]);
+          })
+      });
+
+      document.getElementById("map-rings").addEventListener("click", (e) => {
+        map3D.ringMaxRadius("mag")
+          .ringColor((d) => {
+            return setColors(d);
+          })
+          .ringPropagationSpeed(1)
+          .ringRepeatPeriod("prd")
+          .ringsData(data);
+      });
 
       window.addEventListener("resize", (event) => {
         map3D.width([event.target.innerWidth])
