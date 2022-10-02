@@ -13,6 +13,10 @@ document.addEventListener("readystatechange", (e) => {
       (await res.text()).csvToArray().slice(1).forEach((arr) => {
         data.push({
           yer: parseInt(arr[0]),
+          day: parseInt(arr[1]),
+          hor: parseInt(arr[2]),
+          min: parseInt(arr[3]),
+          sec: parseInt(arr[4]),
           lat: Number.isNaN(parseInt(arr[5])) ? 0 : parseInt(arr[5]),
           lng: Number.isNaN(parseInt(arr[6])) ? 0 : parseInt(arr[6]),
           mag: arr[7] * factor,
@@ -45,13 +49,19 @@ document.addEventListener("readystatechange", (e) => {
             placement: "top",
             arrow: true,
             allowHTML: true,
-            content: `${d.yer}<br />Lat: ${d.lat}<br />Lng: ${d.lng}<br />Mag: ${d.mag / factor}`,
+            content: `${d.day}, ${d.yer}
+<br />${d.hor}h ${d.min}min ${d.sec}s
+<br />Lat: ${d.lat}
+<br />Lng: ${d.lng}
+<br />Mag: ${d.mag / factor}`
           });
+
           return container;
         });
 
       document.getElementById("map-lines").addEventListener("click", (e) => {
-        map3D.hexBinPointLat(d => d.lat)
+        map3D.ringsData([])
+          .hexBinPointLat(d => d.lat)
           .hexBinPointLng(d => d.lng)
           .hexBinPointWeight(d => d.mag)
           .hexBinPointsData(data)
@@ -64,7 +74,8 @@ document.addEventListener("readystatechange", (e) => {
       });
 
       document.getElementById("map-rings").addEventListener("click", (e) => {
-        map3D.ringMaxRadius("mag")
+        map3D.hexBinPointsData([])
+          .ringMaxRadius("mag")
           .ringColor((d) => {
             return setColors(d);
           })
@@ -79,7 +90,6 @@ document.addEventListener("readystatechange", (e) => {
       });
 
       map3D(map);
-
       map3D.controls().autoRotate = true;
       map3D.controls().autoRotateSpeed = 0.25;
     });
