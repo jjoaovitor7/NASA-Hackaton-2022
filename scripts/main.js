@@ -27,7 +27,7 @@ document.addEventListener("readystatechange", (e) => {
       const setColors = (d) => {
         if (d.mag >= 0 && d.mag < 1.5 * factor) {
           return "#ffffff";
-        } else if (d.mag >= 1.5 * factor && d.mag < 2 * factor) {
+        } else if (d.mag >= 1.5 * factor && d.mag < 2.5 * factor) {
           return "#ffff00";
         } else {
           return "#ff0000";
