@@ -4,6 +4,7 @@ document.addEventListener("readystatechange", (e) => {
 
     const map3D = Globe()
       .globeImageUrl("https://globe.gl/example/moon-landing-sites/lunar_surface.jpg")
+      .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
       .showGraticules(true);
 
     fetch("/data/nakamura_1979_sm_locations.csv", { method: "GET" }).then(async (res) => {
@@ -34,36 +35,38 @@ document.addEventListener("readystatechange", (e) => {
         }
       }
 
-      map3D.htmlElementsData(data)
-        .htmlElement(d => {
-          const container = document.createElement("div");
-          container.innerHTML = d.yer;
-          container.style.background = "#000";
-          container.style.color = "#fff";
-          container.style.fontSize = "10px";
-          container.style.fontWeight = "bold";
-          container.style["pointer-events"] = "auto";
-          container.style.cursor = "pointer";
+      const setPoints = (data) => {
+        map3D.htmlElementsData(data)
+          .htmlElement(d => {
+            const container = document.createElement("div");
+            container.innerHTML = d.yer;
+            container.style.background = "#000";
+            container.style.color = "#fff";
+            container.style.fontSize = "10px";
+            container.style.fontWeight = "bold";
+            container.style["pointer-events"] = "auto";
+            container.style.cursor = "pointer";
 
-          tippy(container, {
-            placement: "top",
-            arrow: true,
-            allowHTML: true,
-            content: `${d.day}, ${d.yer}
+            tippy(container, {
+              placement: "top",
+              arrow: true,
+              allowHTML: true,
+              content: `${d.day}, ${d.yer}
 <br />${d.hor}h ${d.min}min ${d.sec}s
 <br />Lat: ${d.lat}
 <br />Lng: ${d.lng}
 <br />Mag: ${d.mag / factor}`
+            });
+
+            return container;
           });
+      }
 
-          return container;
-        });
-
-      document.getElementById("map-lines").addEventListener("click", (e) => {
+      const setPointsLines = (data) => {
         map3D.ringsData([])
           .hexBinPointLat(d => d.lat)
           .hexBinPointLng(d => d.lng)
-          .hexBinPointWeight(d => d.mag)
+          .hexBinPointWeight(d => d.mag * (factor / 3))
           .hexBinPointsData(data)
           .hexTopColor(d => {
             return setColors(d.points[0]);
@@ -71,9 +74,9 @@ document.addEventListener("readystatechange", (e) => {
           .hexSideColor(d => {
             return setColors(d.points[0]);
           })
-      });
+      }
 
-      document.getElementById("map-rings").addEventListener("click", (e) => {
+      const setPointsRings = (data) => {
         map3D.hexBinPointsData([])
           .ringMaxRadius("mag")
           .ringColor((d) => {
@@ -82,7 +85,38 @@ document.addEventListener("readystatechange", (e) => {
           .ringPropagationSpeed(1)
           .ringRepeatPeriod("prd")
           .ringsData(data);
+      }
+
+      setPoints(data);
+      setPointsLines(data);
+
+      const ddLines = document.querySelectorAll("#dd-lines a");
+      const ddRings = document.querySelectorAll("#dd-rings a");
+
+      ddLines[0].addEventListener("click", (e) => {
+        setPoints(data);
+        setPointsLines(data);
       });
+
+      for (let i=1; i < ddLines.length; i++) {
+        ddLines[i].addEventListener("click", (e) => {
+          const f = data.filter((d) => d.yer == parseInt(e.target.textContent));
+          setPoints(f);
+          setPointsLines(f);
+        })
+      }
+
+      ddRings[0].addEventListener("click", (e) => {
+        setPointsRings(data);
+      });
+
+      for (let i=1; i < ddRings.length; i++) {
+        ddRings[i].addEventListener("click", (e) => {
+          const f = data.filter((d) => d.yer == parseInt(e.target.textContent));
+          setPoints(f);
+          setPointsRings(f);
+        })
+      }
 
       window.addEventListener("resize", (event) => {
         map3D.width([event.target.innerWidth])
@@ -91,7 +125,7 @@ document.addEventListener("readystatechange", (e) => {
 
       map3D(map);
       map3D.controls().autoRotate = true;
-      map3D.controls().autoRotateSpeed = 0.25;
+      map3D.controls().autoRotateSpeed = 0.27322;
     });
   }
 });

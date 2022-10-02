@@ -5,17 +5,48 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <link rel="stylesheet" href="/styles/main.css">
   <title>Moonquake Map</title>
 </head>
 
 <body>
+  <header>
+    <div>
+  <h1 id="title">3D Globe Visualization for <a href="https://pds-geosciences.wustl.edu/lunar/urn-nasa-pds-apollo_seismic_event_catalog/data/nakamura_1979_sm_locations.csv">Nakamura 1979 Moonquakes</a></h1>
   <div id="type">
-    <button id="map-lines">Lines</button>
-    <button id="map-rings">Rings</button>
+    <div id="dd-lines" class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="ddb-lines" data-bs-toggle="dropdown" aria-expanded="false">
+        Lines
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="ddb-lines">
+        <li><a class="dropdown-item">All years</a></li>
+        <li><a class="dropdown-item">1971</a></li>
+        <li><a class="dropdown-item">1972</a></li>
+        <li><a class="dropdown-item">1973</a></li>
+        <li><a class="dropdown-item">1974</a></li>
+        <li><a class="dropdown-item">1975</a></li>
+        <li><a class="dropdown-item">1976</a></li>
+      </ul>
+    </div>
+
+    <div id="dd-rings" class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="ddb-rings" data-bs-toggle="dropdown" aria-expanded="false">
+       Rings
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="ddb-rings">
+        <li><a class="dropdown-item">All years</a></li>
+        <li><a class="dropdown-item">1971</a></li>
+        <li><a class="dropdown-item">1972</a></li>
+        <li><a class="dropdown-item">1973</a></li>
+        <li><a class="dropdown-item">1974</a></li>
+        <li><a class="dropdown-item">1975</a></li>
+        <li><a class="dropdown-item">1976</a></li>
+      </ul>
+    </div>
   </div>
-  <div id="map"></div>
+</div>
+
   <div id="legend">
     <p>Magnitude</p>
     <div>
@@ -31,6 +62,14 @@
       2.5 +
     </div>
   </div>
+  </header>
+  <div id="map"></div>
+
+  <footer>
+    <em class="text-white ms-2">The isn't exactly proportional to magnitude.</em>
+  </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/globe.gl@2.26.6/dist/globe.gl.min.js"></script>
   <script
     src="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/csv-to-array/csvToArray.v2.1.min.js">
