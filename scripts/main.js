@@ -1,4 +1,3 @@
-
 const map = document.getElementById("map");
 
 const map3D = Globe()
